@@ -1,4 +1,5 @@
 #include <nan.h>
+#include <errno.h>
 
 using namespace v8;
 
@@ -20,7 +21,7 @@ NAN_METHOD(Fallocate)
     off_t offset = info[2]->Uint32Value(ctx).FromJust();
     off_t len = info[3]->NumberValue(ctx).FromJust();
     int retval = fallocate(fd, mode, offset, len);
-    info.GetReturnValue().Set(retval);
+    info.GetReturnValue().Set(retval == -1 ? -errno : retval);
 }
 
 NAN_MODULE_INIT(Init){
